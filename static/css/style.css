@@ -1,132 +1,139 @@
+/* Общие настройки фона */
 body {
-    margin: 0; 
-    /* Используем min-height для корректной работы на мобильных */
-    min-height: 100vh; 
-    overflow: hidden;
-    background: radial-gradient(circle at center, #1a000a 0%, #050505 100%);
-    color: white; 
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    display: flex; 
-    justify-content: center; 
+    margin: 0;
+    padding: 0;
+    background-color: #000; /* Глубокий черный */
+    color: white;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    /* Убрали perspective, чтобы карточка не крутилась в 3D */
-    touch-action: manipulation;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-#heart-container { 
-    position: fixed; 
-    width: 100%; 
-    height: 100%; 
-    z-index: 0; 
-}
-
-.glass-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px); /* Для корректного размытия в Safari/iOS */
+/* Контейнер карточки */
+#card {
+    background: rgba(20, 20, 20, 0.6); /* Эффект матового стекла */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 35px; /* Чуть мягче углы для стиля iOS */
-    padding: 40px 25px; 
-    width: 90%; 
-    max-width: 380px; /* Оптимально для Pro Max */
-    text-align: center; 
+    border-radius: 24px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px; /* Оптимально для мобильных и ПК */
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     z-index: 10;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.8);
-    
-    /* Удалили transform из transition и сам эффект вращения в JS (если он был) */
-    transition: opacity 0.3s ease; 
-    
-    /* Учитываем отступы iPhone (челка/островок) */
-    margin-top: env(safe-area-inset-top);
-    margin-bottom: env(safe-area-inset-bottom);
+    /* Убираем 3D-трансформации, чтобы карточка была статичной */
+    transform: none !important;
+    transition: transform 0.3s ease;
 }
 
-.neon-title { 
-    text-shadow: 0 0 15px #ff007f; 
-    margin-bottom: 25px; 
-    font-size: 2.4rem; 
-    font-weight: 700;
+/* Заголовок */
+h1 {
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    color: #ff4d6d; /* Нежно-розовый акцент */
 }
 
-.lyrics-wrapper { 
-    min-height: 120px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    padding: 0 10px;
+/* Текст песни */
+#lyric-display {
+    min-height: 80px;
+    margin-bottom: 30px;
 }
 
-#lyric-text { 
-    font-size: 1.3rem; 
-    font-style: italic; 
-    transition: all 0.5s; 
-    text-shadow: 0 0 8px rgba(255,255,255,0.4);
+#lyric-text {
+    font-size: 20px;
     line-height: 1.4;
+    transition: all 0.4s ease;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-.controls { margin: 30px 0; }
+/* Окно твоего сообщения (Админка) */
+#admin-reply-container {
+    display: none; /* Скрыто по умолчанию */
+    background: rgba(255, 77, 109, 0.15);
+    border: 1px solid #ff4d6d;
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.5s ease;
+}
 
-.main-btn {
-    background: none; 
-    color: white; 
-    border: 2px solid #ff007f;
-    padding: 16px 40px; /* Кнопка стала больше — удобнее для тапа */
-    border-radius: 50px; 
-    cursor: pointer;
-    box-shadow: 0 0 15px rgba(255, 0, 127, 0.4); 
+#admin-text {
+    color: #ff4d6d;
     font-weight: bold;
-    font-size: 1rem;
-    letter-spacing: 1px;
-    transition: 0.3s;
-    -webkit-tap-highlight-color: transparent;
+    margin: 0;
 }
 
-.main-btn:active { 
-    background: #ff007f; 
-    transform: scale(0.95); /* Эффект нажатия вместо ховера */
-}
-
-.reply-box { 
-    margin-top: 25px; 
-    border-top: 1px solid rgba(255, 255, 255, 0.1); 
-    padding-top: 20px; 
-}
-
-textarea {
-    width: 100%; 
-    background: rgba(255, 255, 255, 0.07); 
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 15px; 
-    padding: 15px; 
-    color: white; 
-    resize: none; 
-    height: 60px; 
-    outline: none;
-    font-size: 16px; /* Важно: 16px предотвращает авто-зум экрана на iPhone при вводе */
-    appearance: none;
-}
-
-.small-btn { 
-    margin-top: 15px; 
-    background: none; 
-    border: 1px solid #ff007f; 
-    color: white; 
-    padding: 10px 25px; 
-    border-radius: 25px; 
+/* Кнопки */
+button {
+    background: #ff4d6d;
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-size: 16px;
     cursor: pointer;
-    font-size: 0.9rem;
+    width: 100%;
+    transition: 0.3s;
+    margin-top: 10px;
 }
 
-.heart { 
-    position: absolute; 
-    color: #ff007f; 
-    animation: fall linear forwards; 
+button:hover {
+    background: #ff758f;
+    transform: scale(1.02);
+}
+
+/* Поле ввода для неё */
+textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px;
+    color: white;
+    font-size: 16px; /* Важно для мобильных (убирает зум) */
+    margin-top: 20px;
+    box-sizing: border-box;
+    resize: none;
+}
+
+/* Падающие сердечки */
+.heart {
+    position: fixed;
+    top: -20px;
+    font-size: 20px;
+    user-select: none;
     pointer-events: none;
-    will-change: transform; /* Оптимизация для плавности анимации на 120Гц экране */
+    z-index: 1;
+    animation: fall linear forwards;
 }
 
 @keyframes fall {
-    0% { transform: translateY(-10vh) scale(0); opacity: 0; }
-    20% { opacity: 0.8; transform: translateY(10vh) scale(1.2); }
-    100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+    to {
+        transform: translateY(110vh) rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Адаптация для маленьких экранов */
+@media (max-width: 480px) {
+    #card {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 22px;
+    }
+
+    #lyric-text {
+        font-size: 18px;
+    }
 }
