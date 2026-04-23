@@ -7,13 +7,33 @@ document.addEventListener('DOMContentLoaded', () => {
     let lyrics = [];
     let lastIndex = -1;
 
-    // Сразу загружаем данные и твоё сообщение
+    // 1. Загружаем текст песни
     fetch('/get_lyrics').then(r => r.json()).then(data => lyrics = data);
     
-    checkAdminMsg(); 
-    setInterval(checkAdminMsg, 4000); // Проверяем сообщения каждые 4 сек
+    // 2. Функция проверки твоих сообщений (Админка)
+    function checkAdminMsg() {
+        fetch('/get_admin_msg')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('admin-reply-container');
+                const textElem = document.getElementById('admin-text');
+                
+                if (data.message && data.message.trim().length > 0) {
+                    textElem.innerText = data.message;
+                    container.style.display = 'block';
+                } else {
+                    container.style.display = 'none';
+                    textElem.innerText = ''; 
+                }
+            })
+            .catch(err => console.log("Ошибка связи с сервером"));
+    }
 
-    // Кнопка Пауза / Плей
+    // Запускаем проверку сразу и каждые 3 секунды
+    checkAdminMsg();
+    setInterval(checkAdminMsg, 3000);
+
+    // 3. Кнопка Пауза / Плей
     startBtn.addEventListener('click', () => {
         if (music.paused) {
             music.play();
@@ -26,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Синхронизация текста
+    // 4. Синхронизация текста песни
     music.addEventListener('timeupdate', () => {
         const curTime = music.currentTime;
         const index = lyrics.findIndex((line, i) => {
@@ -46,26 +66,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function checkAdminMsg() {
-        fetch('/get_admin_msg').then(r => r.json()).then(data => {
-            const container = document.getElementById('admin-reply-container');
-            if (data.message && data.message.trim() !== "") {
-                container.style.display = 'block';
-                document.getElementById('admin-text').innerText = data.message;
-            } else {
-                container.style.display = 'none';
-            }
-        });
-    }
-
-    // 3D эффект
+    // 5. 3D эффект при движении мыши
     document.addEventListener('mousemove', (e) => {
         let x = (window.innerWidth / 2 - e.pageX) / 25;
         let y = (window.innerHeight / 2 - e.pageY) / 25;
         card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
     });
 
-    // Сердечки
+    // 6. Анимация падающих сердечек (МЫ ЕЁ ВЕРНУЛИ)
     setInterval(() => {
         const h = document.createElement('div');
         h.className = 'heart'; h.innerHTML = '❤️';
@@ -75,19 +83,22 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => h.remove(), 5000);
     }, 450);
 
-    // Отправка ей сообщения тебе
-    document.getElementById('send-btn').addEventListener('click', () => {
-        const val = document.getElementById('user-msg').value;
-        if(!val) return;
-        fetch('/save', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({message: val})
-        }).then(() => {
-            document.getElementById('user-msg').value = '';
-            const tick = document.getElementById('ok-tick');
-            tick.style.display = 'block';
-            setTimeout(() => tick.style.display = 'none', 3000);
+    // 7. Отправка её ответа тебе
+    const sendBtn = document.getElementById('send-btn');
+    if (sendBtn) {
+        sendBtn.addEventListener('click', () => {
+            const val = document.getElementById('user-msg').value;
+            if(!val) return;
+            fetch('/save', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message: val})
+            }).then(() => {
+                document.getElementById('user-msg').value = '';
+                const tick = document.getElementById('ok-tick');
+                tick.style.display = 'block';
+                setTimeout(() => tick.style.display = 'none', 3000);
+            });
         });
-    });
+    }
 });
