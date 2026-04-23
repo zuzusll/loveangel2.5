@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Дыши ❤️</title>
+    <link rel="icon" href="{{ url_for('static', filename='zuzuz.jpg.jpg') }}" type="image/jpeg">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <audio id="bg-music" src="{{ url_for('static', filename='music/love_song.mp3.mp3') }}"></audio>
+    <div id="heart-container"></div>
+    
+    <main class="glass-card" id="card">
+        <h1 class="neon-title">Для тебя</h1>
+        
+        <div id="admin-reply-container" style="display:none; margin-bottom: 20px; padding: 10px; border: 1px solid #ff007f; border-radius: 15px; background: rgba(255,0,127,0.1);">
+            <p style="color: #ff007f; font-size: 0.8rem; margin: 0;">zuzu:</p>
+            <p id="admin-text" style="margin: 5px 0 0 0; font-weight: bold;"></p>
+        </div>
+
+        <div class="lyrics-wrapper">
+            <p id="lyric-text">Нажми, чтобы начать...</p>
+        </div>
+
+        <div class="controls">
+            <button id="start-btn" class="main-btn">Воспроизвести ✨</button>
+        </div>
+
+        <div class="reply-box">
+            <textarea id="user-msg" placeholder="Напиши что-нибудь..."></textarea>
+            <button id="send-btn" class="small-btn">Отправить</button>
+            <span id="ok-tick" style="display:none; color:#00ff88; margin-top:10px;">Получил! ❤️</span>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
