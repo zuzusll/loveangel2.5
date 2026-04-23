@@ -2,7 +2,12 @@ from flask import Flask, render_template, request, jsonify
 import os
 
 app = Flask(__name__)
-
+@app.route('/view_messages')
+def view_messages():
+    if os.path.exists("messages.txt"):
+        with open("messages.txt", "r", encoding="utf-8") as f:
+            return f.read().replace('\n', '<br>')
+    return "Сообщений пока нет"
 # Полная синхронизация текста
 LYRICS_DATA = [
     {"time": 0, "text": "Всё было так, будто бы написано небом..."},
