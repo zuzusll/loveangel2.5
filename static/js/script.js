@@ -66,12 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 5. 3D эффект при движении мыши
-    document.addEventListener('mousemove', (e) => {
-        let x = (window.innerWidth / 2 - e.pageX) / 25;
-        let y = (window.innerHeight / 2 - e.pageY) / 25;
-        card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-    });
+
 
     // 6. Анимация падающих сердечек (МЫ ЕЁ ВЕРНУЛИ)
     setInterval(() => {
