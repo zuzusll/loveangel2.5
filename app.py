@@ -2,13 +2,52 @@ from flask import Flask, render_template, request, jsonify
 import os
 
 app = Flask(__name__)
+
+# ПЕРЕМЕННАЯ ДЛЯ ХРАНЕНИЯ ТВОЕГО СООБЩЕНИЯ (в памяти сервера)
+admin_current_msg = ""
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
+# ТВОИ СООБЩЕНИЯ (АДМИНКА)
+@app.route('/send_admin', methods=['POST'])
+def send_admin():
+    global admin_current_msg
+    data = request.get_json()
+    # Получаем текст. Если пусто — запишется пустая строка
+    admin_current_msg = data.get('message', '')
+    return jsonify({"status": "ok"})
+
+@app.route('/get_admin_msg')
+def get_admin_msg():
+    global admin_current_msg
+    return jsonify({"message": admin_current_msg})
+
+# ЕЁ СООБЩЕНИЯ (СОХРАНЕНИЕ В ФАЙЛ)
+@app.route('/save', methods=['POST'])
+def save_message():
+    data = request.get_json()
+    msg = data.get('message')
+    if msg:
+        with open("messages.txt", "a", encoding="utf-8") as f:
+            f.write(f"От неё: {msg}\n---\n")
+        return jsonify({"status": "ok"})
+    return jsonify({"status": "error"}), 400
+
 @app.route('/view_messages')
 def view_messages():
     if os.path.exists("messages.txt"):
         with open("messages.txt", "r", encoding="utf-8") as f:
-            return f.read().replace('\n', '<br>')
-    return "Сообщений пока нет"
-# Полная синхронизация текста
+            content = f.read().replace('\n', '<br>')
+            return f"<h1>Сообщения от неё:</h1><p>{content}</p>"
+    return "<h1>Сообщений пока нет</h1>"
+
+# ТЕКСТ ПЕСНИ
 LYRICS_DATA = [
     {"time": 0, "text": "Всё было так, будто бы написано небом..."},
     {"time": 6, "text": "Я и ты — будто бы рисунок мелом"},
@@ -36,44 +75,9 @@ LYRICS_DATA = [
     {"time": 181, "text": "Дыши... только дыши ❤️"}
 ]
 
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-@app.route('/admin')
-def admin():
-    return render_template('admin.html')
-
 @app.route('/get_lyrics')
 def get_lyrics():
     return jsonify(LYRICS_DATA)
-
-@app.route('/save', methods=['POST'])
-def save_message():
-    data = request.get_json()
-    msg = data.get('message')
-    if msg:
-        with open("messages.txt", "a", encoding="utf-8") as f:
-            f.write(f"От неё: {msg}\n---\n")
-        return jsonify({"status": "ok"})
-    return jsonify({"status": "error"}), 400
-
-@app.route('/send_admin', methods=['POST'])
-def send_admin():
-    data = request.get_json()
-    msg = data.get('message')
-    if msg:
-        with open("admin_messages.txt", "w", encoding="utf-8") as f:
-            f.write(msg)
-        return jsonify({"status": "ok"})
-    return jsonify({"status": "error"}), 400
-
-@app.route('/get_admin_msg')
-def get_admin_msg():
-    if os.path.exists("admin_messages.txt"):
-        with open("admin_messages.txt", "r", encoding="utf-8") as f:
-            return jsonify({"message": f.read()})
-    return jsonify({"message": ""})
 
 if __name__ == '__main__':
     app.run(debug=True)
